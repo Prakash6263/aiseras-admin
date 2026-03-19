@@ -27,6 +27,14 @@ export default function DashboardPage({ onNavigate }) {
             'x-admin-token': '3eJX4dU1oazZAPPWqZ6nx-LcEycxgWeXZwl7smtJHLpE2oMdLTtWag'
           }
         })
+        
+        // Handle 401 Unauthorized - token is invalid or expired
+        if (response.status === 401) {
+          logout()
+          onNavigate('login')
+          return
+        }
+        
         const data = await response.json()
         if (data.status === 1) {
           setStats(data.stats)
@@ -38,7 +46,7 @@ export default function DashboardPage({ onNavigate }) {
       }
     }
     fetchStats()
-  }, [])
+  }, [logout, onNavigate])
 
   const handleLogout = async () => {
     const result = await Swal.fire({
