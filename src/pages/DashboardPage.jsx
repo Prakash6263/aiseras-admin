@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext'
 import { useUsers } from '../hooks/useUsers'
 
 export default function DashboardPage({ onNavigate }) {
-  const { admin, logout } = useAuth()
+  const { admin, logout, token } = useAuth()
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 7
   const skip = (currentPage - 1) * itemsPerPage
@@ -19,12 +19,17 @@ export default function DashboardPage({ onNavigate }) {
 
   // Fetch stats from API
   useEffect(() => {
+    if (!token) {
+      setStatsLoading(false)
+      return
+    }
+
     const fetchStats = async () => {
       try {
         const response = await fetch('https://api.aiseras.com/aiseras/admin/stats', {
           headers: {
             'accept': 'application/json',
-            'x-admin-token': '3eJX4dU1oazZAPPWqZ6nx-LcEycxgWeXZwl7smtJHLpE2oMdLTtWag'
+            'x-admin-token': token
           }
         })
         
@@ -46,7 +51,7 @@ export default function DashboardPage({ onNavigate }) {
       }
     }
     fetchStats()
-  }, [logout, onNavigate])
+  }, [token, logout, onNavigate])
 
   const handleLogout = async () => {
     const result = await Swal.fire({
