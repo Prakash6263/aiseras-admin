@@ -56,7 +56,7 @@
     const barCanvas = document.getElementById('barChart');
     if(barCanvas && typeof Chart !== 'undefined'){
       const barCtx = barCanvas.getContext('2d');
-      new Chart(barCtx, {
+      window.barChartInstance = new Chart(barCtx, {
         type: 'bar',
         data: {
           labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
@@ -97,7 +97,7 @@
     const donutCanvas = document.getElementById('donutChart');
     if(donutCanvas && typeof Chart !== 'undefined'){
       const donutCtx = donutCanvas.getContext('2d');
-      new Chart(donutCtx, {
+      window.donutChartInstance = new Chart(donutCtx, {
         type: 'doughnut',
         data: {
           labels: ['Active Users', 'Inactive', 'Pending'],
@@ -119,10 +119,8 @@
     }
   }
 
-  // Try init chart after short delay (Chart.js loaded via CDN)
-  setTimeout(function(){
-    initChart();
-  }, 250);
+  // Note: Chart.js initialization is now handled by React in DashboardPage.jsx
+  // This ensures proper DOM lifecycle and ref management
 
   // Initialize DataTables (Simple-DataTables) for tables with class `datatable`
   function initDataTables(){
