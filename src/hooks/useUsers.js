@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 
 export const useUsers = (skip = 0, limit = 50) => {
-  const { token } = useAuth()
+  const { token, logout } = useAuth()
   const [users, setUsers] = useState([])
   const [total, setTotal] = useState(0)
   const [loading, setLoading] = useState(false)
@@ -27,6 +27,13 @@ export const useUsers = (skip = 0, limit = 50) => {
           },
         })
 
+        // Handle 401 Unauthorized - token is invalid or expired
+        if (response.status === 401) {
+          logout()
+          setError('Your session has expired. Please log in again.')
+          return
+        }
+
         const data = await response.json()
 
         if (data.status === 1) {
@@ -44,7 +51,7 @@ export const useUsers = (skip = 0, limit = 50) => {
     }
 
     fetchUsers()
-  }, [token, skip, limit])
+  }, [token, skip, limit, logout])
 
   return { users, total, loading, error }
 }
